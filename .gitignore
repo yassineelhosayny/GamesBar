@@ -1,0 +1,20 @@
+# Credenziali e configurazioni locali
+.env
+.env.*
+!.env.example
+
+# Java
+target/
+*.class
+
+# Node.js
+node_modules/
+dist/
+
+# IDE
+.idea/
+.vscode/
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
