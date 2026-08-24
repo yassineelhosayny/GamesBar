@@ -39,9 +39,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
--- =============================================================================
--- 1. UTENTI
--- =============================================================================
+-- 1/ UTENTI
 CREATE TABLE utente (
     id                     BIGINT       GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nome                   VARCHAR(80)  NOT NULL,
@@ -62,9 +60,9 @@ CREATE TABLE utente (
     CONSTRAINT utente_email_formato        CHECK (email LIKE '%_@_%.__%'),
     CONSTRAINT utente_ruolo_valido         CHECK (ruolo IN (
                                                'GIOCATORE',
-                                               'AMMINISTRATORE_LOCALE',
-                                               'AMMINISTRATORE_GIOCO',
-                                               'AMMINISTRATORE_PIATTAFORMA')),
+                                               'ADMIN_LOCALE',
+                                               'ADMIN_GIOCO',
+                                               'ADMIN_PIATTAFORMA')),
     CONSTRAINT utente_stato_valido         CHECK (stato IN ('ATTIVO','SOSPESO','BLOCCATO')),
     -- deve essere presente almeno un metodo di autenticazione
     CONSTRAINT utente_metodo_autenticazione CHECK (
