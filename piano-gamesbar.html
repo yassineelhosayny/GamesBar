@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GamesBar — piano di lavoro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Karla:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --felt:        #0B241C;
+    --felt-deep:   #071813;
+    --panel:       #0F3025;
+    --chalk:       #EDE6D6;
+    --chalk-dim:   #93AA9D;
+    --wire:        rgba(237,230,214,.14);
+    --red:         #B4232B;
+    --brass:       #E0A83C;
+    --ok:          #6FBF8B;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{ margin:0; padding:0; }
+
+  body{
+    background:
+      radial-gradient(1100px 640px at 76% -12%, #14392C 0%, transparent 62%),
+      var(--felt);
+    color: var(--chalk);
+    font-family:"Karla", ui-sans-serif, system-ui, sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:88px;
+  }
+
+  .wrap{ max-width:860px; margin:0 auto; padding:0 22px; }
+
+  /* ---------- barra fissa ---------- */
+  .bar{
+    position:sticky; top:0; z-index:20;
+    background:rgba(7,24,19,.86);
+    backdrop-filter:blur(9px);
+    border-bottom:1px solid var(--wire);
+  }
+  .bar-in{
+    max-width:860px; margin:0 auto; padding:11px 22px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .bar-title{
+    font-family:"Anton", Impact, sans-serif;
+    font-size:15px; letter-spacing:.13em; text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .bar-title span{ color:var(--red); }
+  .bar-count{
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    font-size:12px; color:var(--chalk-dim); margin-left:auto; white-space:nowrap;
+  }
+  .bar-count b{ color:var(--chalk); font-weight:700; }
+  .rail{
+    position:absolute; left:0; bottom:-1px; height:2px;
+    background:var(--red); width:0%;
+    transition:width .35s cubic-bezier(.2,.7,.3,1);
+  }
+
+  /* ---------- tabellone ---------- */
+  .board{ padding:54px 0 30px; text-align:center; }
+  .eyebrow{
+    font-family:"JetBrains Mono", monospace;
+    font-size:11px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--chalk-dim);
+  }
+  .score{
+    font-family:"Anton", Impact, sans-serif;
+    font-size:clamp(92px, 23vw, 196px);
+    line-height:.84;
+    letter-spacing:-.02em;
+    margin:12px 0 6px;
+    font-variant-numeric:tabular-nums;
+    text-shadow:0 0 46px rgba(224,168,60,.16);
+  }
+  .score.done{ color:var(--brass); font-size:clamp(56px, 13vw, 108px); }
+  .score-sub{
+    font-family:"JetBrains Mono", monospace;
+    font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--chalk-dim);
+  }
+  .score-sub b{ color:var(--chalk); font-weight:700; }
+
+  /* ---------- comandi ---------- */
+  .tools{
+    display:flex; flex-wrap:wrap; gap:8px;
+    justify-content:center; padding:20px 0 34px;
+    border-bottom:1px solid var(--wire);
+  }
+  .btn{
+    font-family:"JetBrains Mono", monospace;
+    font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+    color:var(--chalk-dim);
+    background:transparent;
+    border:1px solid var(--wire);
+    border-radius:2px;
+    padding:8px 13px;
+    cursor:pointer;
+    transition:color .15s, border-color .15s, background .15s;
+  }
+  .btn:hover{ color:var(--chalk); border-color:rgba(237,230,214,.36); }
+  .btn[aria-pressed="true"]{ color:var(--felt-deep); background:var(--brass); border-color:var(--brass); }
+  .btn.danger:hover{ color:#fff; border-color:var(--red); background:var(--red); }
+  .btn.arm{ color:#fff; background:var(--red); border-color:var(--red); }
+  :focus-visible{ outline:2px solid var(--brass); outline-offset:3px; }
+
+  /* ---------- fasi ---------- */
+  .legs{ list-style:none; margin:0; padding:0; }
+  .leg{ border-bottom:1px solid var(--wire); }
+
+  .leg-head{
+    width:100%; display:flex; align-items:baseline; gap:14px;
+    padding:22px 2px; background:none; border:0; cursor:pointer;
+    color:inherit; text-align:left; font:inherit;
+  }
+  .leg-num{
+    font-family:"JetBrains Mono", monospace;
+    font-size:12px; font-weight:700; color:var(--red);
+    min-width:26px;
+  }
+  .leg-name{
+    font-family:"Anton", Impact, sans-serif;
+    font-size:clamp(19px, 4vw, 25px);
+    letter-spacing:.008em; text-transform:uppercase; flex:1;
+  }
+  .leg-meta{
+    font-family:"JetBrains Mono", monospace;
+    font-size:11px; color:var(--chalk-dim); white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+  }
+  .leg.full .leg-name{ color:var(--chalk-dim); }
+  .leg.full .leg-meta{ color:var(--brass); }
+
+  .ticks{ display:flex; gap:3px; padding:0 2px 16px 40px; }
+  .tick{ height:3px; flex:1; background:var(--wire); border-radius:1px; transition:background .25s; }
+  .tick.on{ background:var(--red); }
+  .leg.full .tick.on{ background:var(--brass); }
+
+  .tasks{ list-style:none; margin:0; padding:0 0 22px 0; }
+  .leg[aria-expanded="false"] .tasks,
+  .leg[aria-expanded="false"] .ticks{ display:none; }
+
+  .task{ display:block; }
+  .task.hidden{ display:none; }
+
+  .task label{
+    display:flex; align-items:flex-start; gap:13px;
+    padding:9px 4px 9px 2px; cursor:pointer; border-radius:3px;
+    transition:background .15s;
+  }
+  .task label:hover{ background:rgba(237,230,214,.045); }
+  .task input{ position:absolute; opacity:0; width:0; height:0; }
+
+  .box{
+    flex:0 0 auto; width:19px; height:19px; margin-top:2px;
+    border:1.5px solid rgba(237,230,214,.34);
+    border-radius:50%;
+    display:grid; place-items:center;
+    transition:border-color .18s, background .18s;
+  }
+  .box::after{
+    content:""; width:7px; height:7px; border-radius:50%;
+    background:var(--red); transform:scale(0); transition:transform .18s cubic-bezier(.3,1.4,.5,1);
+  }
+  .task input:checked + .box{ border-color:var(--red); }
+  .task input:checked + .box::after{ transform:scale(1); }
+  .task input:focus-visible + .box{ outline:2px solid var(--brass); outline-offset:3px; }
+
+  .txt{ position:relative; }
+  .txt::after{
+    content:""; position:absolute; left:-2px; top:52%; height:1.5px;
+    width:0; background:var(--chalk-dim);
+    transition:width .28s cubic-bezier(.2,.7,.3,1);
+  }
+  .task input:checked ~ .txt{ color:var(--chalk-dim); }
+  .task input:checked ~ .txt::after{ width:calc(100% + 4px); }
+
+  .foot{
+    padding:34px 0 0; text-align:center;
+    font-family:"JetBrains Mono", monospace;
+    font-size:11px; color:var(--chalk-dim); letter-spacing:.05em;
+  }
+
+  @media (max-width:520px){
+    .bar-title{ font-size:13px; letter-spacing:.09em; }
+    .ticks{ padding-left:0; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="bar-title">Games<span>Bar</span> · piano di lavoro</div>
+    <div class="bar-count"><b id="cDone">0</b> / <span id="cTot">0</span> fatte</div>
+  </div>
+  <div class="rail" id="rail"></div>
+</div>
+
+<div class="wrap">
+
+  <div class="board">
+    <div class="eyebrow">Punteggio residuo</div>
+    <div class="score" id="score" aria-live="polite">—</div>
+    <div class="score-sub" id="scoreSub">attività da chiudere</div>
+  </div>
+
+  <div class="tools">
+    <button class="btn" id="btnHide" aria-pressed="false">Nascondi completate</button>
+    <button class="btn" id="btnFold">Comprimi tutto</button>
+    <button class="btn danger" id="btnReset">Azzera</button>
+  </div>
+
+  <ol class="legs" id="legs"></ol>
+
+  <p class="foot" id="foot">&nbsp;</p>
+</div>
+
+<script>
+const PIANO = [
+  { t:"Fondamenta backend", done:true, items:[
+    "Creare progetto Maven/Spring Boot",
+    "Creare GamesBarApp",
+    "Configurare PostgreSQL",
+    "Configurare Flyway",
+    "Eseguire V1, V2 e V3",
+    "Verificare database e migration"
+  ]},
+  { t:"Prima API REST", items:[
+    "Capire JPA",
+    "Mappare tipo_gioco con un'Entity",
+    "Creare il Repository",
+    "Creare il Service",
+    "Creare il Controller",
+    "Creare GET /api/tipi-gioco/attivi",
+    "Provare l'API dal browser/Postman",
+    "Creare il primo test"
+  ]},
+  { t:"Utenti e autenticazione", items:[
+    "Entity e Repository di utente",
+    "Registrazione email/password",
+    "Hash della password",
+    "Login",
+    "Autenticazione Google",
+    "Gestione ruoli e utenti bloccati",
+    "Protezione degli endpoint"
+  ]},
+  { t:"Locali, edge e giochi", items:[
+    "Creazione e modifica dei locali",
+    "Richieste di approvazione del locale",
+    "Approvazione/rifiuto da parte dell'amministratore piattaforma",
+    "Registrazione e autenticazione degli edge",
+    "Heartbeat e stato online/offline",
+    "Installazione dei giochi nei locali",
+    "Associazione gioco-edge",
+    "Configurazione delle freccette",
+    "Ricerca della freccettiera tramite codice_accesso"
+  ]},
+  { t:"Partite", items:[
+    "Creazione della partita",
+    "Partecipazioni individuali e ospiti",
+    "Partecipazioni a squadre",
+    "Avvio, sospensione, conclusione e annullamento",
+    "Configurazione effettiva 301/501/701",
+    "Registrazione degli eventi",
+    "Registrazione dei tiri",
+    "Calcolo del punteggio e del bust",
+    "Salvataggio dei risultati"
+  ]},
+  { t:"MQTT e sincronizzazione offline", items:[
+    "Aggiungere broker MQTT a Docker Compose",
+    "Collegare il backend al broker",
+    "Creare listener MQTT nel backend",
+    "Autenticare l'edge",
+    "Ricevere eventi dall'edge",
+    "Impedire eventi e partite duplicate",
+    "Gestire eventi arrivati dopo un periodo offline",
+    "Aggiornare stato edge/sensori"
+  ]},
+  { t:"Edge e simulatore", items:[
+    "Implementare il programma edge",
+    "Creare database locale dell'edge",
+    "Ricevere eventi dal simulatore",
+    "Inviare eventi al backend tramite MQTT/REST",
+    "Salvare localmente gli eventi quando il backend è offline",
+    "Sincronizzarli alla riconnessione",
+    "Implementare il simulatore della freccettiera",
+    "Simulare punteggio, connessione e disconnessione"
+  ]},
+  { t:"Tornei e statistiche", items:[
+    "Gestione squadre e membri",
+    "Creazione tornei",
+    "Associazione torneo-locale",
+    "Collegamento delle partite al torneo",
+    "Classifica e statistiche calcolate"
+  ]},
+  { t:"Frontend React", items:[
+    "Registrazione e login",
+    "Pagine amministratore piattaforma",
+    "Pagine amministratore locale",
+    "Gestione edge e giochi",
+    "Inserimento codice della freccettiera",
+    "Partita live",
+    "Risultati, tornei e statistiche"
+  ]},
+  { t:"Conclusione", items:[
+    "Validazione e gestione errori",
+    "Test backend, MQTT e sincronizzazione",
+    "Documentazione API",
+    "Container Docker del backend",
+    "Compose completo con PostgreSQL, MQTT e backend",
+    "Preparazione demo e relazione"
+  ]}
+];
+
+const KEY = "gamesbar:piano:v1";
+const TOTAL = PIANO.reduce((n,f)=>n+f.items.length,0);
+const id = (f,i)=>"f"+f+"t"+i;
+
+let state = {};          // id -> true
+let folded = false;
+let hideDone = false;
+let memoryOnly = false;
+
+/* ---------- salvataggio ---------- */
+async function load(){
+  try{
+    const r = await window.storage.get(KEY);
+    if(r && r.value) return JSON.parse(r.value);
+  }catch(e){ /* chiave assente o storage non disponibile */ }
+  return null;
+}
+async function save(){
+  if(memoryOnly) return;
+  try{
+    const r = await window.storage.set(KEY, JSON.stringify(state));
+    if(!r) throw new Error("no result");
+    foot("Progresso salvato");
+  }catch(e){
+    memoryOnly = true;
+    foot("Salvataggio non disponibile qui: le spunte restano solo in questa sessione");
+  }
+}
+function foot(msg){ document.getElementById("foot").textContent = msg; }
+
+/* ---------- render ---------- */
+function build(){
+  const root = document.getElementById("legs");
+  root.innerHTML = "";
+  PIANO.forEach((f,fi)=>{
+    const li = document.createElement("li");
+    li.className = "leg";
+    li.setAttribute("aria-expanded","true");
+    li.dataset.f = fi;
+
+    const num = String(fi+1).padStart(2,"0");
+    li.innerHTML =
+      '<button class="leg-head" type="button">' +
+        '<span class="leg-num">' + num + '</span>' +
+        '<span class="leg-name">' + f.t + '</span>' +
+        '<span class="leg-meta"></span>' +
+      '</button>' +
+      '<div class="ticks">' + f.items.map(()=>'<i class="tick"></i>').join("") + '</div>' +
+      '<ul class="tasks"></ul>';
+
+    const ul = li.querySelector(".tasks");
+    f.items.forEach((txt,ii)=>{
+      const key = id(fi,ii);
+      const item = document.createElement("li");
+      item.className = "task";
+      item.dataset.key = key;
+      const lab = document.createElement("label");
+      const cb = document.createElement("input");
+      cb.type = "checkbox"; cb.id = key;
+      cb.addEventListener("change", ()=>{
+        if(cb.checked) state[key] = true; else delete state[key];
+        refresh(); save();
+      });
+      const box = document.createElement("span"); box.className = "box";
+      const sp  = document.createElement("span"); sp.className = "txt"; sp.textContent = txt;
+      lab.append(cb, box, sp);
+      item.append(lab);
+      ul.append(item);
+    });
+
+    li.querySelector(".leg-head").addEventListener("click", ()=>{
+      li.setAttribute("aria-expanded", li.getAttribute("aria-expanded")==="true" ? "false" : "true");
+    });
+
+    root.append(li);
+  });
+}
+
+function refresh(){
+  let done = 0;
+  document.querySelectorAll(".leg").forEach(li=>{
+    const fi = +li.dataset.f;
+    const ticks = li.querySelectorAll(".tick");
+    let n = 0;
+    li.querySelectorAll(".task").forEach((item,ii)=>{
+      const on = !!state[id(fi,ii)];
+      item.querySelector("input").checked = on;
+      item.classList.toggle("hidden", hideDone && on);
+      if(on) n++;
+    });
+    ticks.forEach((t,ii)=> t.classList.toggle("on", ii < n));
+    const tot = PIANO[fi].items.length;
+    li.querySelector(".leg-meta").textContent = n===tot ? "leg vinta" : n+"/"+tot;
+    li.classList.toggle("full", n===tot);
+    done += n;
+  });
+
+  const left = TOTAL - done;
+  const score = document.getElementById("score");
+  score.classList.toggle("done", left===0);
+  score.textContent = left===0 ? "CHECKOUT" : left;
+  document.getElementById("scoreSub").innerHTML = left===0
+    ? "piano chiuso · <b>" + TOTAL + "</b> attività"
+    : "attività da chiudere · <b>" + done + "</b> già fatte";
+  document.getElementById("cDone").textContent = done;
+  document.getElementById("cTot").textContent = TOTAL;
+  document.getElementById("rail").style.width = (done/TOTAL*100) + "%";
+}
+
+/* ---------- comandi ---------- */
+document.getElementById("btnHide").addEventListener("click", e=>{
+  hideDone = !hideDone;
+  e.currentTarget.setAttribute("aria-pressed", String(hideDone));
+  e.currentTarget.textContent = hideDone ? "Mostra tutte" : "Nascondi completate";
+  refresh();
+});
+
+document.getElementById("btnFold").addEventListener("click", e=>{
+  folded = !folded;
+  document.querySelectorAll(".leg").forEach(li=> li.setAttribute("aria-expanded", String(!folded)));
+  e.currentTarget.textContent = folded ? "Espandi tutto" : "Comprimi tutto";
+});
+
+let armed = false, armTimer = null;
+document.getElementById("btnReset").addEventListener("click", e=>{
+  const b = e.currentTarget;
+  if(!armed){
+    armed = true; b.classList.add("arm"); b.textContent = "Confermi?";
+    armTimer = setTimeout(()=>{ armed=false; b.classList.remove("arm"); b.textContent="Azzera"; }, 4000);
+    return;
+  }
+  clearTimeout(armTimer);
+  armed = false; b.classList.remove("arm"); b.textContent = "Azzera";
+  state = {}; refresh(); save();
+});
+
+/* ---------- avvio ---------- */
+(async function init(){
+  build();
+  const saved = await load();
+  if(saved){
+    state = saved;
+    foot("Progresso ripreso da dove l'avevi lasciato");
+  }else{
+    PIANO.forEach((f,fi)=>{ if(f.done) f.items.forEach((_,ii)=> state[id(fi,ii)] = true); });
+    foot("Fase 1 già spuntata: la marcavi come completata nel piano");
+  }
+  refresh();
+})();
+</script>
+</body>
+</html>

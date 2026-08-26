@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Piano GamesBar</title>
+<style>
+  body{
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 0 20px 60px;
+    line-height: 1.5;
+    color: #1c1c1c;
+  }
+  h1{ font-size: 22px; margin: 0 0 4px; }
+  .stato{ color: #666; font-size: 14px; margin-bottom: 20px; }
+  progress{ width: 100%; height: 8px; margin-bottom: 24px; }
+  h2{
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin: 28px 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #ddd;
+  }
+  h2 small{ float: right; color: #888; font-weight: normal; letter-spacing: 0; text-transform: none; }
+  label{
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 5px 0;
+    cursor: pointer;
+  }
+  label:hover{ background: #f6f6f6; }
+  input{ margin-top: 4px; width: 16px; height: 16px; cursor: pointer; flex: none; }
+  input:checked + span{ color: #999; text-decoration: line-through; }
+  button{
+    margin-top: 30px;
+    padding: 7px 14px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover{ background: #f0f0f0; }
+</style>
+</head>
+<body>
+
+<h1>Piano di lavoro — GamesBar</h1>
+<p class="stato" id="stato"></p>
+<progress id="barra" value="0" max="1"></progress>
+
+<div id="lista"></div>
+
+<button onclick="azzera()">Azzera tutto</button>
+
+<script>
+const PIANO = [
+  ["1. Fondamenta backend", [
+    "Creare progetto Maven/Spring Boot",
+    "Creare GamesBarApp",
+    "Configurare PostgreSQL",
+    "Configurare Flyway",
+    "Eseguire V1, V2 e V3",
+    "Verificare database e migration"
+  ]],
+  ["2. Prima API REST", [
+    "Capire JPA",
+    "Mappare tipo_gioco con un'Entity",
+    "Creare il Repository",
+    "Creare il Service",
+    "Creare il Controller",
+    "Creare GET /api/tipi-gioco/attivi",
+    "Provare l'API dal browser/Postman",
+    "Creare il primo test"
+  ]],
+  ["3. Utenti e autenticazione", [
+    "Entity e Repository di utente",
+    "Registrazione email/password",
+    "Hash della password",
+    "Login",
+    "Autenticazione Google",
+    "Gestione ruoli e utenti bloccati",
+    "Protezione degli endpoint"
+  ]],
+  ["4. Locali, edge e giochi", [
+    "Creazione e modifica dei locali",
+    "Richieste di approvazione del locale",
+    "Approvazione/rifiuto da parte dell'amministratore piattaforma",
+    "Registrazione e autenticazione degli edge",
+    "Heartbeat e stato online/offline",
+    "Installazione dei giochi nei locali",
+    "Associazione gioco-edge",
+    "Configurazione delle freccette",
+    "Ricerca della freccettiera tramite codice_accesso"
+  ]],
+  ["5. Partite", [
+    "Creazione della partita",
+    "Partecipazioni individuali e ospiti",
+    "Partecipazioni a squadre",
+    "Avvio, sospensione, conclusione e annullamento",
+    "Configurazione effettiva 301/501/701",
+    "Registrazione degli eventi",
+    "Registrazione dei tiri",
+    "Calcolo del punteggio e del bust",
+    "Salvataggio dei risultati",
+    "Aggiornamento live con WebSocket o SSE"
+  ]],
+  ["6. MQTT e sincronizzazione offline", [
+    "Aggiungere broker MQTT a Docker Compose",
+    "Collegare il backend al broker",
+    "Creare listener MQTT nel backend",
+    "Autenticare l'edge",
+    "Ricevere eventi dall'edge",
+    "Impedire eventi e partite duplicate",
+    "Gestire eventi arrivati dopo un periodo offline",
+    "Aggiornare stato edge/sensori"
+  ]],
+  ["7. Edge e simulatore", [
+    "Implementare il programma edge",
+    "Creare database locale dell'edge",
+    "Ricevere eventi dal simulatore",
+    "Inviare eventi al backend tramite MQTT/REST",
+    "Salvare localmente gli eventi quando il backend è offline",
+    "Sincronizzarli alla riconnessione",
+    "Implementare il simulatore della freccettiera",
+    "Simulare punteggio, connessione e disconnessione"
+  ]],
+  ["8. Tornei e statistiche", [
+    "Gestione squadre e membri",
+    "Creazione tornei",
+    "Associazione torneo-locale",
+    "Collegamento delle partite al torneo",
+    "Classifica e statistiche calcolate"
+  ]],
+  ["9. Frontend React", [
+    "Registrazione e login",
+    "Pagine amministratore piattaforma",
+    "Pagine amministratore locale",
+    "Gestione edge e giochi",
+    "Inserimento codice della freccettiera",
+    "Partita live",
+    "Risultati, tornei e statistiche"
+  ]],
+  ["10. Conclusione", [
+    "Validazione e gestione errori",
+    "Test backend, MQTT e sincronizzazione",
+    "Documentazione API",
+    "Container Docker del backend",
+    "Compose completo con PostgreSQL, MQTT e backend",
+    "Preparazione demo e relazione"
+  ]]
+];
+
+const CHIAVE = "piano-gamesbar";
+let fatte = {};
+
+// carica quello che era stato spuntato
+try {
+  fatte = JSON.parse(localStorage.getItem(CHIAVE)) || {};
+} catch (e) {
+  fatte = {};
+}
+
+function salva() {
+  try {
+    localStorage.setItem(CHIAVE, JSON.stringify(fatte));
+  } catch (e) {
+    // il salvataggio non funziona in anteprima, ma in locale sì
+  }
+}
+
+function disegna() {
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  PIANO.forEach(function (fase, f) {
+    const titolo = fase[0];
+    const voci = fase[1];
+
+    const h2 = document.createElement("h2");
+    const conteggio = voci.filter((_, i) => fatte[f + "-" + i]).length;
+    h2.innerHTML = titolo + " <small>" + conteggio + "/" + voci.length + "</small>";
+    lista.appendChild(h2);
+
+    voci.forEach(function (testo, i) {
+      const chiave = f + "-" + i;
+      const label = document.createElement("label");
+
+      const box = document.createElement("input");
+      box.type = "checkbox";
+      box.checked = !!fatte[chiave];
+      box.onchange = function () {
+        if (box.checked) fatte[chiave] = true;
+        else delete fatte[chiave];
+        salva();
+        disegna();
+      };
+
+      const span = document.createElement("span");
+      span.textContent = testo;
+
+      label.appendChild(box);
+      label.appendChild(span);
+      lista.appendChild(label);
+    });
+  });
+
+  const totale = PIANO.reduce((n, f) => n + f[1].length, 0);
+  const done = Object.keys(fatte).length;
+  document.getElementById("stato").textContent = done + " di " + totale + " completate";
+  document.getElementById("barra").value = done;
+  document.getElementById("barra").max = totale;
+}
+
+function azzera() {
+  if (confirm("Togliere tutte le spunte?")) {
+    fatte = {};
+    salva();
+    disegna();
+  }
+}
+
+disegna();
+</script>
+</body>
+</html>

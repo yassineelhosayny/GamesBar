@@ -1,0 +1,18 @@
+in caso se images di docker non esistono; avvia applicatione docker di windows
+
+ISTRUZIONE MAVEN IMPORTANTE:
+# avviare progetto,"sviluppo":
+        mvn spring-boot:run     => cerca la class con la notazione @SpringBootApplication e lancia la main di quella class
+
+#costruzione del programma distribuibile "comando finale"
+mvn package  =>compila il progetto, esegue i test, crea un file .jar dentro backend/target.
+
+
+strizione attuale per avviare il progetto:
+#docker:
+ docker compose ps => per vedere se la container è healthy o running
+ docker compose up -d => per avviare/creare il container
+ 
+#avviare springBoot
+cd ../backend
+mvn spring-boot:run
