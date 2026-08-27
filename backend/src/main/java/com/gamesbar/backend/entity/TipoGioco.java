@@ -43,9 +43,22 @@ public class TipoGioco {
     private Instant data_aggiornamento;
 
 
-    //costrutore
+    //costrutore per JPA
     protected TipoGioco(){}
-
+    //costrutore di controllo e test
+    public TipoGioco(String nome,String codice, String descrizione, String versioneGestore,boolean stato){
+        if(codice == null || codice.isBlank()){
+            throw new IllegalArgumentException("il codice è obbligatorio.");
+        }
+        if(nome == null || nome.isBlank()){
+            throw new IllegalArgumentException("il nome è obbligatorio.");
+        }
+        this.codice = codice;
+        this.nome = nome;
+        this.descrizione = descrizione;
+        this.versione_gestore = versioneGestore;
+        this.attivo = stato;
+    }
      //getter e setters
     public Long getId() {
         return id;

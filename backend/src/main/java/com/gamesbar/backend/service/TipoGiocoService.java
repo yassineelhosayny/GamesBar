@@ -17,11 +17,11 @@ public class TipoGiocoService {
    
     public List<TipoGiocoRisposta> trovaTipiGiochiAttivi(){
         return tipoGiocoRepo.findByAttivoTrueOrderByNomeAsc().stream()
-        .map(tipo_gioco -> new TipoGiocoRisposta(
-            tipo_gioco.getId(),
-            tipo_gioco.getCodice(),
-            tipo_gioco.getNome(),
-            tipo_gioco.getDescrizione()
-        )).toList();
+                .map(tipo_gioco -> new TipoGiocoRisposta(
+                    tipo_gioco.getId(),
+                    tipo_gioco.getCodice(),
+                    tipo_gioco.getNome(),
+                    tipo_gioco.getDescrizione()
+                )).toList();
     }
 }

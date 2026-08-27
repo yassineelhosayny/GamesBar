@@ -16,3 +16,63 @@ strizione attuale per avviare il progetto:
 #avviare springBoot
 cd ../backend
 mvn spring-boot:run
+
+
+possible archittetura per il backend
+
+backend/
+└── src/
+    ├── main/
+    │   ├── java/com/gamesbar/backend/
+    │   │   ├── GamesBarApp.java
+    │   │   │
+    │   │   ├── config/
+    │   │   │   ├── database/
+    │   │   │   ├── security/
+    │   │   │   └── mqtt/
+    │   │   │
+    │   │   ├── common/
+    │   │   │   └── exception/
+    │   │   │
+    │   │   ├── utente/
+    │   │   │   ├── controller/
+    │   │   │   ├── service/
+    │   │   │   ├── repository/
+    │   │   │   ├── entity/
+    │   │   │   └── dto/
+    │   │   │
+    │   │   ├── locale/
+    │   │   │   ├── controller/
+    │   │   │   ├── service/
+    │   │   │   ├── repository/
+    │   │   │   ├── entity/
+    │   │   │   └── dto/
+    │   │   │
+    │   │   ├── gioco/
+    │   │   │   ├── controller/
+    │   │   │   ├── service/
+    │   │   │   ├── repository/
+    │   │   │   ├── entity/
+    │   │   │   └── dto/
+    │   │   │
+    │   │   ├── partita/
+    │   │   │   ├── controller/
+    │   │   │   ├── service/
+    │   │   │   ├── repository/
+    │   │   │   ├── entity/
+    │   │   │   └── dto/
+    │   │   │
+    │   │   ├── torneo/
+    │   │   │
+    │   │   └── integration/
+    │   │       └── mqtt/
+    │   │           ├── listener/
+    │   │           ├── publisher/
+    │   │           └── message/
+    │   │
+    │   └── resources/
+    │       ├── application.properties
+    │       └── db/migration/
+    │
+    └── test/
+        └── java/com/gamesbar/backend/
