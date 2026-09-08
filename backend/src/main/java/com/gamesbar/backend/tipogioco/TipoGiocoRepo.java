@@ -1,10 +1,8 @@
-package com.gamesbar.backend.repository;
+package com.gamesbar.backend.tipogioco;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.gamesbar.backend.entity.TipoGioco;
 
 public interface TipoGiocoRepo extends JpaRepository<TipoGioco,Long>{
     List<TipoGioco> findByAttivoTrueOrderByNomeAsc(); //perché non ci public o private?

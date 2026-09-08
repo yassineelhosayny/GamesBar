@@ -1,8 +1,9 @@
-package com.gamesbar.backend.dto;
+package com.gamesbar.backend.tipogioco;
 
 public record TipoGiocoRisposta(  //descrive il JSON restituito dall’API.
     Long id,
     String codice,
     String nome,
-    String descrizione
+    String descrizione,
+    boolean isAttivo
 ){}

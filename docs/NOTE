@@ -23,48 +23,49 @@ possible archittetura per il backend
 backend/
 └── src/
     ├── main/
-    │   ├── java/com/gamesbar/backend/
-    │   │   ├── GamesBarApp.java
-    │   │   │
-    │   │   ├── config/
-    │   │   │   ├── database/
-    │   │   │   ├── security/
-    │   │   │   └── mqtt/
-    │   │   │
-    │   │   ├── common/
-    │   │   │   └── exception/
-    │   │   │
-    │   │   ├── utente/
-    │   │   │   ├── controller/
-    │   │   │   ├── service/
-    │   │   │   ├── repository/
-    │   │   │   ├── entity/
-    │   │   │   └── dto/
-    │   │   │
-    │   │   ├── locale/
-    │   │   │   ├── controller/
-    │   │   │   ├── service/
-    │   │   │   ├── repository/
-    │   │   │   ├── entity/
-    │   │   │   └── dto/
-    │   │   │
-    │   │   ├── gioco/
-    │   │   │   ├── controller/
-    │   │   │   ├── service/
-    │   │   │   ├── repository/
-    │   │   │   ├── entity/
-    │   │   │   └── dto/
-    │   │   │
-    │   │   ├── partita/
-    │   │   │   ├── controller/
-    │   │   │   ├── service/
-    │   │   │   ├── repository/
-    │   │   │   ├── entity/
-    │   │   │   └── dto/
-    │   │   │
-    │   │   ├── torneo/
-    │   │   │
-    │   │   └── integration/
+    │   ├── java/com.gamesbar.backend
+    ├── GamesBarApp.java
+    │
+    ├── tipogioco
+    │   ├── TipoGioco.java
+    │   ├── TipoGiocoRepo.java
+    │   ├── TipoGiocoService.java
+    │   ├── TipoGiocoController.java
+    │   └── TipoGiocoRisposta.java
+    │
+    ├── utente
+    │   ├── Utente.java
+    │   ├── UtenteRepo.java
+    │   ├── UtenteService.java         quando servirà
+    │   └── UtenteController.java      quando servirà
+    │
+    ├── auth
+    │   ├── AuthController.java
+    │   ├── AuthService.java
+    │   ├── RegistrazioneRichiesta.java
+    │   ├── LoginRichiesta.java
+    │   └── AuthRisposta.java
+    │
+    ├── security
+    │   ├── SecurityConfig.java
+    │   ├── JwtService.java
+    │   ├── JwtAuthenticationFilter.java
+    │   └── CustomUserDetailsService.java
+    │
+    ├── locale
+    │   ├── Locale.java
+    │   ├── LocaleRepo.java
+    │   ├── LocaleService.java
+    │   ├── LocaleController.java
+    │   └── DTO necessari
+    │
+    ├── partita
+    │   └── ...
+    │
+    └── torneo
+        └── ...
+    │   │   
+    │   |── integration/     ???
     │   │       └── mqtt/
     │   │           ├── listener/
     │   │           ├── publisher/
@@ -76,3 +77,46 @@ backend/
     │
     └── test/
         └── java/com/gamesbar/backend/
+
+
+com.gamesbar.backend
+├── GamesBarApp.java
+│
+├── tipogioco
+│   ├── TipoGioco.java
+│   ├── TipoGiocoRepo.java
+│   ├── TipoGiocoService.java
+│   ├── TipoGiocoController.java
+│   └── TipoGiocoRisposta.java
+│
+├── utente
+│   ├── Utente.java
+│   ├── UtenteRepo.java
+│   ├── UtenteService.java         quando servirà
+│   └── UtenteController.java      quando servirà
+│
+├── auth
+│   ├── AuthController.java
+│   ├── AuthService.java
+│   ├── RegistrazioneRichiesta.java
+│   ├── LoginRichiesta.java
+│   └── AuthRisposta.java
+│
+├── security
+│   ├── SecurityConfig.java
+│   ├── JwtService.java
+│   ├── JwtAuthenticationFilter.java
+│   └── CustomUserDetailsService.java
+│
+├── locale
+│   ├── Locale.java
+│   ├── LocaleRepo.java
+│   ├── LocaleService.java
+│   ├── LocaleController.java
+│   └── DTO necessari
+│
+├── partita
+│   └── ...
+│
+└── torneo
+    └── ...

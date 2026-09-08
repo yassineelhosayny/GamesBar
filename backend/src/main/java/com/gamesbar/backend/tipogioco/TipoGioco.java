@@ -1,4 +1,4 @@
-package com.gamesbar.backend.entity;
+package com.gamesbar.backend.tipogioco;
 
 import java.time.Instant;
 
@@ -11,7 +11,6 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tipo_gioco")
-
 public class TipoGioco {
     
     @Id             //chiave primaria

@@ -1,11 +1,8 @@
-package com.gamesbar.backend.service;
+package com.gamesbar.backend.tipogioco;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-
-import com.gamesbar.backend.dto.TipoGiocoRisposta;
-import com.gamesbar.backend.repository.TipoGiocoRepo;
 
 @Service
 public class TipoGiocoService {
@@ -21,7 +18,8 @@ public class TipoGiocoService {
                     tipo_gioco.getId(),
                     tipo_gioco.getCodice(),
                     tipo_gioco.getNome(),
-                    tipo_gioco.getDescrizione()
+                    tipo_gioco.getDescrizione(),
+                    tipo_gioco.isAttivo()
                 )).toList();
     }
 }

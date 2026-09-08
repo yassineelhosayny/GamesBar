@@ -11,9 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gamesbar.backend.dto.TipoGiocoRisposta;
-import com.gamesbar.backend.entity.TipoGioco;
-import com.gamesbar.backend.repository.TipoGiocoRepo;
+import com.gamesbar.backend.tipogioco.TipoGioco;
+import com.gamesbar.backend.tipogioco.TipoGiocoRepo;
+import com.gamesbar.backend.tipogioco.TipoGiocoRisposta;
+import com.gamesbar.backend.tipogioco.TipoGiocoService;
 
 @ExtendWith(MockitoExtension.class)
 public class TipoGiocoServiceTest {
@@ -34,5 +35,6 @@ public class TipoGiocoServiceTest {
         List<TipoGiocoRisposta> res = tipoGiocoService.trovaTipiGiochiAttivi();
         assertEquals(1,res.size());
         assertEquals("FRECCETTE",res.get(0).nome());
+        assertEquals(true,res.get(0).isAttivo());
     }
 }
