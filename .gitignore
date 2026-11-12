@@ -18,3 +18,5 @@ dist/
 # Sistema operativo
 Thumbs.db
 .DS_Store
+
+CLAUDE.md

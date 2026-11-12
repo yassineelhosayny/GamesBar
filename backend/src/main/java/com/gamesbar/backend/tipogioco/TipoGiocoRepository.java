@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TipoGiocoRepo extends JpaRepository<TipoGioco,Long>{
-    List<TipoGioco> findByAttivoTrueOrderByNomeAsc(); //perché non ci public o private?
+public interface TipoGiocoRepository extends JpaRepository<TipoGioco,Long>{
+    List<TipoGioco> findByAttivoTrueOrderByNomeAsc(); 
 }
 
 /*

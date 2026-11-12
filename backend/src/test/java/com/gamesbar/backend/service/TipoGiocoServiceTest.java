@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gamesbar.backend.tipogioco.TipoGioco;
-import com.gamesbar.backend.tipogioco.TipoGiocoRepo;
+import com.gamesbar.backend.tipogioco.TipoGiocoRepository;
 import com.gamesbar.backend.tipogioco.TipoGiocoRisposta;
 import com.gamesbar.backend.tipogioco.TipoGiocoService;
 
@@ -20,7 +20,7 @@ import com.gamesbar.backend.tipogioco.TipoGiocoService;
 public class TipoGiocoServiceTest {
 
     @Mock
-    private TipoGiocoRepo tipoGiocoRepo;
+    private TipoGiocoRepository tipoGiocoRepo;
     @InjectMocks
     private TipoGiocoService tipoGiocoService;
 
