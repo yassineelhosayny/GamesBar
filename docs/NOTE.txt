@@ -28,14 +28,17 @@ backend/
     │
     ├── tipogioco
     │   ├── TipoGioco.java
-    │   ├── TipoGiocoRepo.java
+    │   ├── TipoGiocoRepository.java
     │   ├── TipoGiocoService.java
     │   ├── TipoGiocoController.java
     │   └── TipoGiocoRisposta.java
     │
     ├── utente
     │   ├── Utente.java
-    │   ├── UtenteRepo.java
+    │   ├── RuoloUtente.java
+    │   ├── StatoUtente.java
+    │   ├── UtenteRepository.java
+    │   ├── UtenteRisposta.java
     │   ├── UtenteService.java         quando servirà
     │   └── UtenteController.java      quando servirà
     │
@@ -43,6 +46,7 @@ backend/
     │   ├── AuthController.java
     │   ├── AuthService.java
     │   ├── RegistrazioneRichiesta.java
+    │   ├── EmailGiaRegistrataException.java
     │   ├── LoginRichiesta.java
     │   └── AuthRisposta.java
     │
@@ -52,9 +56,13 @@ backend/
     │   ├── JwtAuthenticationFilter.java
     │   └── CustomUserDetailsService.java
     │
+    ├── config
+    │   ├── GestoreErrori.java
+    │   └── ErroreRisposta.java
+    │
     ├── locale
     │   ├── Locale.java
-    │   ├── LocaleRepo.java
+    │   ├── LocaleRepository.java
     │   ├── LocaleService.java
     │   ├── LocaleController.java
     │   └── DTO necessari
@@ -84,14 +92,17 @@ com.gamesbar.backend
 │
 ├── tipogioco
 │   ├── TipoGioco.java
-│   ├── TipoGiocoRepo.java
+│   ├── TipoGiocoRepository.java
 │   ├── TipoGiocoService.java
 │   ├── TipoGiocoController.java
 │   └── TipoGiocoRisposta.java
 │
 ├── utente
 │   ├── Utente.java
-│   ├── UtenteRepo.java
+│   ├── RuoloUtente.java
+│   ├── StatoUtente.java
+│   ├── UtenteRepository.java
+│   ├── UtenteRisposta.java
 │   ├── UtenteService.java         quando servirà
 │   └── UtenteController.java      quando servirà
 │
@@ -99,6 +110,7 @@ com.gamesbar.backend
 │   ├── AuthController.java
 │   ├── AuthService.java
 │   ├── RegistrazioneRichiesta.java
+│   ├── EmailGiaRegistrataException.java
 │   ├── LoginRichiesta.java
 │   └── AuthRisposta.java
 │
@@ -108,9 +120,13 @@ com.gamesbar.backend
 │   ├── JwtAuthenticationFilter.java
 │   └── CustomUserDetailsService.java
 │
+├── config
+│   ├── GestoreErrori.java
+│   └── ErroreRisposta.java
+│
 ├── locale
 │   ├── Locale.java
-│   ├── LocaleRepo.java
+│   ├── LocaleRepository.java
 │   ├── LocaleService.java
 │   ├── LocaleController.java
 │   └── DTO necessari
