@@ -2,6 +2,8 @@ package com.gamesbar.backend.utente;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -84,5 +86,15 @@ class UtenteTest {
 
         assertThrows(IllegalArgumentException.class, () -> utente.assegnaRuolo(null));
         assertEquals(RuoloUtente.GIOCATORE, utente.getRuolo());
+    }
+
+    @Test
+    void registraAccessoSalvaLOraDellUltimoAccesso() {
+        Utente utente = nuovoUtente();
+        assertNull(utente.getDataUltimoAccesso());
+
+        utente.registraAccesso();
+
+        assertNotNull(utente.getDataUltimoAccesso());
     }
 }

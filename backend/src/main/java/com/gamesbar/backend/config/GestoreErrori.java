@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.gamesbar.backend.auth.CredenzialiNonValideException;
 import com.gamesbar.backend.auth.EmailGiaRegistrataException;
+import com.gamesbar.backend.auth.UtenteNonAttivoException;
 
 //intercetta le eccezioni lanciate da tutti i controller
 //e le trasforma in una risposta HTTP con un JSON ErroreRisposta
@@ -42,8 +44,22 @@ public class GestoreErrori {
 
     //l'email esiste già → 409
     @ExceptionHandler(EmailGiaRegistrataException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+     @ResponseStatus(HttpStatus.CONFLICT)
     public ErroreRisposta emailGiaRegistrata(EmailGiaRegistrataException eccezione) {
+        return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
+    }
+
+    //login con email o password sbagliate → 401
+    @ExceptionHandler(CredenzialiNonValideException.class)
+     @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErroreRisposta credenzialiNonValide(CredenzialiNonValideException eccezione) {
+        return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
+    }
+
+    //password giusta ma utente sospeso o bloccato → 403
+    @ExceptionHandler(UtenteNonAttivoException.class)
+@ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErroreRisposta utenteNonAttivo(UtenteNonAttivoException eccezione) {
         return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
     }
 }

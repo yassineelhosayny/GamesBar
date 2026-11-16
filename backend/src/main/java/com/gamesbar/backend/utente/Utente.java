@@ -136,6 +136,11 @@ public class Utente {
         return stato == StatoUtente.ATTIVO;
     }
 
+    //lo chiamo dal login: salvo il momento dell'ultimo accesso
+    public void registraAccesso() {
+        this.dataUltimoAccesso = Instant.now();
+    }
+
     //getter
     public Long getId() {
         return id;

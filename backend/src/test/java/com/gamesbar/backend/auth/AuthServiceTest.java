@@ -1,12 +1,15 @@
 package com.gamesbar.backend.auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.gamesbar.backend.security.JwtService;
 import com.gamesbar.backend.utente.RuoloUtente;
 import com.gamesbar.backend.utente.Utente;
 import com.gamesbar.backend.utente.UtenteRepository;
@@ -28,6 +32,8 @@ class AuthServiceTest {
     private UtenteRepository utenteRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private JwtService jwtService;
     @InjectMocks
     private AuthService authService;
 
@@ -86,5 +92,79 @@ class AuthServiceTest {
 
         verify(passwordEncoder, never()).encode(anyString());
         verify(utenteRepository, never()).save(any(Utente.class));
+    }
+
+    // ---------------- LOGIN ----------------
+
+    private LoginRichiesta loginDiProva() {
+        return new LoginRichiesta("mario.rossi@example.com", "password123");
+    }
+
+    private Utente utenteSalvato() {
+        return new Utente("Mario", "Rossi", "mario.rossi@example.com", "HASH_FINTO");
+    }
+
+    @Test
+    void loginCorrettoRestituisceTokenEUtente() {
+        Utente utente = utenteSalvato();
+        when(utenteRepository.findByEmail("mario.rossi@example.com")).thenReturn(Optional.of(utente));
+        when(passwordEncoder.matches("password123", "HASH_FINTO")).thenReturn(true);
+        when(jwtService.creaToken(utente)).thenReturn("TOKEN_FINTO");
+
+        AuthRisposta risposta = authService.login(loginDiProva());
+
+        assertEquals("TOKEN_FINTO", risposta.token());
+        assertEquals("mario.rossi@example.com", risposta.utente().email());
+    }
+
+    @Test
+    void loginCorrettoSalvaLUltimoAccesso() {
+        Utente utente = utenteSalvato();
+        when(utenteRepository.findByEmail("mario.rossi@example.com")).thenReturn(Optional.of(utente));
+        when(passwordEncoder.matches("password123", "HASH_FINTO")).thenReturn(true);
+
+        authService.login(loginDiProva());
+
+        assertNotNull(utente.getDataUltimoAccesso());
+        verify(utenteRepository).save(utente);
+    }
+
+    @Test
+    void emailSconosciutaRifiutata() {
+        when(utenteRepository.findByEmail("mario.rossi@example.com")).thenReturn(Optional.empty());
+
+        assertThrows(CredenzialiNonValideException.class, () -> authService.login(loginDiProva()));
+    }
+
+    @Test
+    void passwordSbagliataRifiutataSenzaToken() {
+        when(utenteRepository.findByEmail("mario.rossi@example.com")).thenReturn(Optional.of(utenteSalvato()));
+        when(passwordEncoder.matches("password123", "HASH_FINTO")).thenReturn(false);
+
+        assertThrows(CredenzialiNonValideException.class, () -> authService.login(loginDiProva()));
+
+        verify(jwtService, never()).creaToken(any(Utente.class));
+    }
+
+    @Test
+    void utenteSospesoNonPuoEntrare() {
+        Utente utente = utenteSalvato();
+        utente.sospendi();
+        when(utenteRepository.findByEmail("mario.rossi@example.com")).thenReturn(Optional.of(utente));
+        when(passwordEncoder.matches("password123", "HASH_FINTO")).thenReturn(true);
+
+        assertThrows(UtenteNonAttivoException.class, () -> authService.login(loginDiProva()));
+
+        verify(jwtService, never()).creaToken(any(Utente.class));
+    }
+
+    @Test
+    void emailDelLoginNormalizzata() {
+        when(utenteRepository.findByEmail("mario.rossi@example.com")).thenReturn(Optional.empty());
+
+        assertThrows(CredenzialiNonValideException.class,
+            () -> authService.login(new LoginRichiesta("Mario.Rossi@Example.COM", "password123")));
+
+        verify(utenteRepository).findByEmail("mario.rossi@example.com");
     }
 }

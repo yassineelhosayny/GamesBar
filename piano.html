@@ -82,17 +82,17 @@ const PIANO = [
     "Registrazione email/password",
     "Hash della password",
     "Login",
-    "Autenticazione Google",
     "Gestione ruoli e utenti bloccati",
     "Protezione degli endpoint"
   ]],
-  ["4. Locali, edge e giochi", [
+  ["4. Locali, giochi ed edge", [
     "Creazione e modifica dei locali",
     "Richieste di approvazione del locale",
     "Approvazione/rifiuto da parte dell'amministratore piattaforma",
+    "Amministratore del gioco: tipi di gioco, sensori e regole",
     "Registrazione e autenticazione degli edge",
     "Heartbeat e stato online/offline",
-    "Installazione dei giochi nei locali",
+    "Installazione dei giochi nei locali (codice univoco nel locale)",
     "Associazione gioco-edge",
     "Configurazione delle freccette",
     "Ricerca della freccettiera tramite codice_accesso"
@@ -110,6 +110,7 @@ const PIANO = [
     "Aggiornamento live con WebSocket o SSE"
   ]],
   ["6. MQTT e sincronizzazione offline", [
+    "Definire i topic e i messaggi MQTT",
     "Aggiungere broker MQTT a Docker Compose",
     "Collegare il backend al broker",
     "Creare listener MQTT nel backend",
@@ -127,31 +128,51 @@ const PIANO = [
     "Salvare localmente gli eventi quando il backend è offline",
     "Sincronizzarli alla riconnessione",
     "Implementare il simulatore della freccettiera",
-    "Simulare punteggio, connessione e disconnessione"
+    "Simulare punteggio, connessione e disconnessione",
+    "Simulatore: mostrare lo stato degli attuatori (display del punteggio)",
+    "Multithreading nell'edge e nel listener MQTT"
   ]],
   ["8. Frontend Vue.js + Tailwind CSS", [
     "Registrazione e login",
+    "Giochi disponibili nei locali",
+    "Partite giocate e statistiche personali",
     "Pagine amministratore piattaforma",
     "Pagine amministratore locale",
+    "Pagine amministratore del gioco",
     "Gestione edge e giochi",
     "Inserimento codice della freccettiera",
-    "Partita live",
-    "Risultati, tornei e statistiche"
+    "Partita live"
   ]],
-  ["9. Tornei e statistiche", [
+  ["9. Tornei e statistiche (obbligatori, versione semplice)", [
     "Gestione squadre e membri",
-    "Creazione tornei",
+    "Creazione tornei (un tipo di gioco, più locali)",
     "Associazione torneo-locale",
     "Collegamento delle partite al torneo",
-    "Classifica e statistiche calcolate"
+    "Classifica finale del torneo",
+    "Statistiche: partite giocate, % vittorie, punteggi medi",
+    "Statistiche: classifica giocatori e giochi più usati per locale",
+    "Pagine frontend di tornei, classifiche e statistiche"
   ]],
-  ["10. Conclusione", [
+  ["10. Documentazione (un pezzo alla fine di ogni fase)", [
+    "UML dei casi d'uso + descrizione dei casi principali",
+    "UML delle classi del dominio",
+    "Diagramma dei package e delle classi di implementazione",
+    "Diagrammi di sequenza dei flussi principali",
+    "API REST in OpenAPI/Swagger (YAML)",
+    "Schema dei microservizi con interfacce di ingresso/uscita",
+    "Descrizione dei thread e della loro interazione"
+  ]],
+  ["11. Conclusione", [
     "Validazione e gestione errori",
-    "Test backend, MQTT e sincronizzazione",
-    "Documentazione API",
-    "Container Docker del backend",
-    "Compose completo con PostgreSQL, MQTT e backend",
-    "Preparazione demo e relazione"
+    "Test di integrazione con scenari realistici",
+    "Container Docker di backend, edge, simulatore e frontend",
+    "Compose completo con tutti i servizi",
+    "Preparazione demo (scenari di test)",
+    "Relazione finale (6 capitoli)"
+  ]],
+  ["12. Facoltativi (solo se resta tempo)", [
+    "Login con Google (OAuth 2.0)",
+    "Interfaccia locale sul monitor dell'edge"
   ]]
 ];
 

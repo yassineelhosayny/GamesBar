@@ -8,4 +8,15 @@ public record UtenteRisposta(
     String cognome,
     String email,
     RuoloUtente ruolo
-){}
+){
+    //trasforma l'Entity in risposta: usato da registrazione, login e profilo
+    public static UtenteRisposta daUtente(Utente utente) {
+        return new UtenteRisposta(
+            utente.getId(),
+            utente.getNome(),
+            utente.getCognome(),
+            utente.getEmail(),
+            utente.getRuolo()
+        );
+    }
+}

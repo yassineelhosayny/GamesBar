@@ -20,11 +20,16 @@ public class AuthController {
         this.authService = authService;
     }
 
-    //@RequestBody: trasforma il JSON ricevuto in RegistrazioneRichiesta
-    //@Valid: controlla le annotazioni del DTO prima di entrare nel metodo
+    // registrazione
     @PostMapping("/registrazione")
     @ResponseStatus(HttpStatus.CREATED)     //201 N_U
     public UtenteRisposta registra(@Valid @RequestBody RegistrazioneRichiesta richiesta) {
         return authService.registra(richiesta);
+    }
+
+    //login restuisce (200 OK) se i datu sono valid
+    @PostMapping("/login")
+    public AuthRisposta login(@Valid @RequestBody LoginRichiesta richiesta) {
+        return authService.login(richiesta);
     }
 }

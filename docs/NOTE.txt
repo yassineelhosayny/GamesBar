@@ -39,22 +39,23 @@ backend/
     │   ├── StatoUtente.java
     │   ├── UtenteRepository.java
     │   ├── UtenteRisposta.java
-    │   ├── UtenteService.java         quando servirà
-    │   └── UtenteController.java      quando servirà
+    │   ├── UtenteService.java
+    │   └── UtenteController.java
     │
     ├── auth
     │   ├── AuthController.java
     │   ├── AuthService.java
     │   ├── RegistrazioneRichiesta.java
     │   ├── EmailGiaRegistrataException.java
+    │   ├── CredenzialiNonValideException.java
+    │   ├── UtenteNonAttivoException.java
     │   ├── LoginRichiesta.java
     │   └── AuthRisposta.java
     │
     ├── security
     │   ├── SecurityConfig.java
     │   ├── JwtService.java
-    │   ├── JwtAuthenticationFilter.java
-    │   └── CustomUserDetailsService.java
+    │   └── JwtAuthenticationFilter.java
     │
     ├── config
     │   ├── GestoreErrori.java
@@ -103,22 +104,23 @@ com.gamesbar.backend
 │   ├── StatoUtente.java
 │   ├── UtenteRepository.java
 │   ├── UtenteRisposta.java
-│   ├── UtenteService.java         quando servirà
-│   └── UtenteController.java      quando servirà
+│   ├── UtenteService.java
+│   └── UtenteController.java
 │
 ├── auth
 │   ├── AuthController.java
 │   ├── AuthService.java
 │   ├── RegistrazioneRichiesta.java
 │   ├── EmailGiaRegistrataException.java
+│   ├── CredenzialiNonValideException.java
+│   ├── UtenteNonAttivoException.java
 │   ├── LoginRichiesta.java
 │   └── AuthRisposta.java
 │
 ├── security
 │   ├── SecurityConfig.java
 │   ├── JwtService.java
-│   ├── JwtAuthenticationFilter.java
-│   └── CustomUserDetailsService.java
+│   └── JwtAuthenticationFilter.java
 │
 ├── config
 │   ├── GestoreErrori.java

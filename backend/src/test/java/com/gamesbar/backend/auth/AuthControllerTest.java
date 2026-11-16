@@ -13,15 +13,21 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.gamesbar.backend.security.JwtService;
+import com.gamesbar.backend.security.SecurityConfig;
 import com.gamesbar.backend.utente.RuoloUtente;
+import com.gamesbar.backend.utente.UtenteRepository;
 import com.gamesbar.backend.utente.UtenteRisposta;
 
-//avvia solo la parte web (controller + GestoreErrori), senza server e senza database
+//avvia solo la parte web (controller + GestoreErrori), senza server e senza database.
+//@Import carica anche le nostre regole di sicurezza (SecurityConfig)
 @WebMvcTest(AuthController.class)
+@Import(SecurityConfig.class)
 class AuthControllerTest {
 
     //simula le richieste HTTP, come farebbe Postman
@@ -32,7 +38,14 @@ class AuthControllerTest {
     @MockitoBean
     private AuthService authService;
 
+    //servono a SecurityConfig per creare il filtro JWT: qui bastano dei mock
+    @MockitoBean
+    private JwtService jwtService;
+    @MockitoBean
+    private UtenteRepository utenteRepository;
+
     private static final String URL = "/api/auth/registrazione";
+    private static final String URL_LOGIN = "/api/auth/login";
 
     private static final String JSON_VALIDO = """
         {
@@ -118,5 +131,53 @@ class AuthControllerTest {
         mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(JSON_VALIDO))
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.errore").value("l'email mario.rossi@example.com è già registrata."));
+    }
+
+    // ---------------- LOGIN ----------------
+
+    private static final String JSON_LOGIN = """
+        { "email": "mario.rossi@example.com", "password": "password123" }
+        """;
+
+    @Test
+    void loginCorrettoRestituisce200ConToken() throws Exception {
+        UtenteRisposta utente = new UtenteRisposta(1L, "Mario", "Rossi", "mario.rossi@example.com", RuoloUtente.GIOCATORE);
+        when(authService.login(any(LoginRichiesta.class))).thenReturn(new AuthRisposta("TOKEN_FINTO", utente));
+
+        mockMvc.perform(post(URL_LOGIN).contentType(MediaType.APPLICATION_JSON).content(JSON_LOGIN))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").value("TOKEN_FINTO"))
+            .andExpect(jsonPath("$.utente.email").value("mario.rossi@example.com"));
+    }
+
+    @Test
+    void loginConCredenzialiSbagliateRestituisce401() throws Exception {
+        when(authService.login(any(LoginRichiesta.class))).thenThrow(new CredenzialiNonValideException());
+
+        mockMvc.perform(post(URL_LOGIN).contentType(MediaType.APPLICATION_JSON).content(JSON_LOGIN))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.errore").value("email o password non corretti."));
+    }
+
+    @Test
+    void loginUtenteSospesoRestituisce403() throws Exception {
+        when(authService.login(any(LoginRichiesta.class))).thenThrow(new UtenteNonAttivoException());
+
+        mockMvc.perform(post(URL_LOGIN).contentType(MediaType.APPLICATION_JSON).content(JSON_LOGIN))
+            .andExpect(status().isForbidden())
+            .andExpect(jsonPath("$.errore").value("l'account è sospeso o bloccato."));
+    }
+
+    @Test
+    void loginSenzaPasswordRestituisce400() throws Exception {
+        String json = """
+            { "email": "mario.rossi@example.com" }
+            """;
+
+        mockMvc.perform(post(URL_LOGIN).contentType(MediaType.APPLICATION_JSON).content(json))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.campi.password").value("la password è obbligatoria"));
+
+        verify(authService, never()).login(any(LoginRichiesta.class));
     }
 }
