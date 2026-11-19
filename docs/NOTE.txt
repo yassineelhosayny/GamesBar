@@ -17,6 +17,11 @@ strizione attuale per avviare il progetto:
 cd ../backend
 mvn spring-boot:run
 
+#primo amministratore della piattaforma (da fare a mano, una volta, in pgAdmin):
+ 1. registrati normalmente con POST /api/auth/registrazione
+ 2. UPDATE utente SET ruolo = 'ADMIN_PIATTAFORMA' WHERE email = 'la-tua-email';
+ 3. rifai il login: ora puoi usare /api/admin/utenti
+
 
 possible archittetura per il backend
 
@@ -40,7 +45,11 @@ backend/
     │   ├── UtenteRepository.java
     │   ├── UtenteRisposta.java
     │   ├── UtenteService.java
-    │   └── UtenteController.java
+    │   ├── CambioRuoloRichiesta.java
+    │   ├── UtenteNonTrovatoException.java
+    │   ├── OperazioneNonPermessaException.java
+    │   ├── AdminUtenteController.java      /api/admin/utenti (solo ADMIN_PIATTAFORMA)
+    │   └── UtenteController.java           /api/utenti/me
     │
     ├── auth
     │   ├── AuthController.java
@@ -105,7 +114,11 @@ com.gamesbar.backend
 │   ├── UtenteRepository.java
 │   ├── UtenteRisposta.java
 │   ├── UtenteService.java
-│   └── UtenteController.java
+│   ├── CambioRuoloRichiesta.java
+│   ├── UtenteNonTrovatoException.java
+│   ├── OperazioneNonPermessaException.java
+│   ├── AdminUtenteController.java      /api/admin/utenti (solo ADMIN_PIATTAFORMA)
+│   └── UtenteController.java           /api/utenti/me
 │
 ├── auth
 │   ├── AuthController.java
