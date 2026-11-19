@@ -7,16 +7,18 @@ public record UtenteRisposta(
     String nome,
     String cognome,
     String email,
-    RuoloUtente ruolo
+    RuoloUtente ruolo,
+    StatoUtente stato
 ){
-    //trasforma l'Entity in risposta: usato da registrazione, login e profilo
+    //trasforma l'Entity in risposta: usato da registrazione, login, profilo e amministrazione
     public static UtenteRisposta daUtente(Utente utente) {
         return new UtenteRisposta(
             utente.getId(),
             utente.getNome(),
             utente.getCognome(),
             utente.getEmail(),
-            utente.getRuolo()
+            utente.getRuolo(),
+            utente.getStato()
         );
     }
 }

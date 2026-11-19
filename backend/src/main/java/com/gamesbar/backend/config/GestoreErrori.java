@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.gamesbar.backend.auth.CredenzialiNonValideException;
 import com.gamesbar.backend.auth.EmailGiaRegistrataException;
 import com.gamesbar.backend.auth.UtenteNonAttivoException;
+import com.gamesbar.backend.utente.OperazioneNonPermessaException;
+import com.gamesbar.backend.utente.UtenteNonTrovatoException;
 
 //intercetta le eccezioni lanciate da tutti i controller
 //e le trasforma in una risposta HTTP con un JSON ErroreRisposta
@@ -61,5 +64,26 @@ public class GestoreErrori {
 @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErroreRisposta utenteNonAttivo(UtenteNonAttivoException eccezione) {
         return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
+    }
+    //"admin"
+    //l'id richiesto non esiste → 404 
+    @ExceptionHandler(UtenteNonTrovatoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroreRisposta utenteNonTrovato(UtenteNonTrovatoException eccezione) {
+        return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
+    }
+
+    //operazione vietata da una regola esempio admin non pò modificare se stesso → 403
+    @ExceptionHandler(OperazioneNonPermessaException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErroreRisposta operazioneNonPermessa(OperazioneNonPermessaException eccezione) {
+        return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
+    }
+
+    //JSON scritto male o con un valore non ammesso (es. "ruolo": "bviibi") → 400
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErroreRisposta jsonNonLeggibile(HttpMessageNotReadableException eccezione) {
+        return new ErroreRisposta("JSON non valido o con un valore non ammesso.", new HashMap<>());
     }
 }

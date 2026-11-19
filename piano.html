@@ -176,6 +176,35 @@ const PIANO = [
   ]]
 ];
 
+// voci FINITE: vengono aggiornate alla fine di ogni passo, così le spunte sono salvate
+// nel file e non solo nel browser. Si scrive il testo della voce (uguale a quello di PIANO),
+// così le spunte restano giuste anche se l'ordine delle voci cambia
+const FATTE_NEL_FILE = [
+  // 1. Fondamenta backend
+  "Creare progetto Maven/Spring Boot",
+  "Creare GamesBarApp",
+  "Configurare PostgreSQL",
+  "Configurare Flyway",
+  "Eseguire V1, V2 e V3",
+  "Verificare database e migration",
+  // 2. Prima API REST
+  "Capire JPA",
+  "Mappare tipo_gioco con un'Entity",
+  "Creare il Repository",
+  "Creare il Service",
+  "Creare il Controller",
+  "Creare GET /api/tipi-gioco/attivi",
+  "Provare l'API dal browser/Postman",
+  "Creare il primo test",
+  // 3. Utenti e autenticazione
+  "Entity e Repository di utente",
+  "Registrazione email/password",
+  "Hash della password",
+  "Login",
+  "Gestione ruoli e utenti bloccati",
+  "Protezione degli endpoint"
+];
+
 const CHIAVE = "piano-gamesbar";
 let fatte = {};
 
@@ -194,16 +223,33 @@ function salva() {
   }
 }
 
+// una voce è fatta se è scritta in FATTE_NEL_FILE oppure se l'hai spuntata tu nel browser
+function eFatta(f, i) {
+  const testo = PIANO[f][1][i];
+  return FATTE_NEL_FILE.includes(testo) || fatte[f + "-" + i] === true;
+}
+
 function disegna() {
   const lista = document.getElementById("lista");
   lista.innerHTML = "";
+
+  let totale = 0;
+  let done = 0;
 
   PIANO.forEach(function (fase, f) {
     const titolo = fase[0];
     const voci = fase[1];
 
+    let conteggio = 0;
+    for (let i = 0; i < voci.length; i++) {
+      if (eFatta(f, i)) {
+        conteggio++;
+      }
+    }
+    totale = totale + voci.length;
+    done = done + conteggio;
+
     const h2 = document.createElement("h2");
-    const conteggio = voci.filter((_, i) => fatte[f + "-" + i]).length;
     h2.innerHTML = titolo + " <small>" + conteggio + "/" + voci.length + "</small>";
     lista.appendChild(h2);
 
@@ -213,7 +259,9 @@ function disegna() {
 
       const box = document.createElement("input");
       box.type = "checkbox";
-      box.checked = !!fatte[chiave];
+      box.checked = eFatta(f, i);
+      // le voci segnate nel file non si possono togliere dal browser
+      box.disabled = FATTE_NEL_FILE.includes(testo);
       box.onchange = function () {
         if (box.checked) fatte[chiave] = true;
         else delete fatte[chiave];
@@ -230,8 +278,6 @@ function disegna() {
     });
   });
 
-  const totale = PIANO.reduce((n, f) => n + f[1].length, 0);
-  const done = Object.keys(fatte).length;
   document.getElementById("stato").textContent = done + " di " + totale + " completate";
   document.getElementById("barra").value = done;
   document.getElementById("barra").max = totale;

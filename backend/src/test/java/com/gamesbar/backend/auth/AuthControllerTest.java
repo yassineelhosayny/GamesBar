@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.gamesbar.backend.security.JwtService;
 import com.gamesbar.backend.security.SecurityConfig;
 import com.gamesbar.backend.utente.RuoloUtente;
+import com.gamesbar.backend.utente.StatoUtente;
 import com.gamesbar.backend.utente.UtenteRepository;
 import com.gamesbar.backend.utente.UtenteRisposta;
 
@@ -58,7 +59,7 @@ class AuthControllerTest {
 
     @Test
     void registrazioneValidaRestituisce201ConUtente() throws Exception {
-        UtenteRisposta risposta = new UtenteRisposta(1L, "Mario", "Rossi", "mario.rossi@example.com", RuoloUtente.GIOCATORE);
+        UtenteRisposta risposta = new UtenteRisposta(1L, "Mario", "Rossi", "mario.rossi@example.com", RuoloUtente.GIOCATORE, StatoUtente.ATTIVO);
         when(authService.registra(any(RegistrazioneRichiesta.class))).thenReturn(risposta);
 
         mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(JSON_VALIDO))
@@ -75,7 +76,7 @@ class AuthControllerTest {
         String json = """
             { "nome": "Mario", "cognome": "Rossi", "email": "  mario.rossi@example.com ", "password": "password123" }
             """;
-        UtenteRisposta risposta = new UtenteRisposta(1L, "Mario", "Rossi", "mario.rossi@example.com", RuoloUtente.GIOCATORE);
+        UtenteRisposta risposta = new UtenteRisposta(1L, "Mario", "Rossi", "mario.rossi@example.com", RuoloUtente.GIOCATORE, StatoUtente.ATTIVO);
         when(authService.registra(any(RegistrazioneRichiesta.class))).thenReturn(risposta);
 
         mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(json))
@@ -141,7 +142,7 @@ class AuthControllerTest {
 
     @Test
     void loginCorrettoRestituisce200ConToken() throws Exception {
-        UtenteRisposta utente = new UtenteRisposta(1L, "Mario", "Rossi", "mario.rossi@example.com", RuoloUtente.GIOCATORE);
+        UtenteRisposta utente = new UtenteRisposta(1L, "Mario", "Rossi", "mario.rossi@example.com", RuoloUtente.GIOCATORE, StatoUtente.ATTIVO);
         when(authService.login(any(LoginRichiesta.class))).thenReturn(new AuthRisposta("TOKEN_FINTO", utente));
 
         mockMvc.perform(post(URL_LOGIN).contentType(MediaType.APPLICATION_JSON).content(JSON_LOGIN))

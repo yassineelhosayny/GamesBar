@@ -28,7 +28,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, JwtService jwtService,UtenteRepository utenteRepository) throws Exception {
         JwtAuthenticationFilter filtroJwt = new JwtAuthenticationFilter(jwtService, utenteRepository);
 
-        //CSRF serve per i cookie di sessione: noi usiamo il token, quindi lo spegniamo
+        //CSRF serve per i cookie di sessione: noi usiamo il token, quindi lo spegniamo, 
         http.csrf(csrf -> csrf.disable());
 
         //STATELESS: il server non salva sessioni, ogni richiesta porta il suo token
@@ -39,6 +39,8 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/api/auth/registrazione", "/api/auth/login").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/tipi-gioco/**").permitAll()
             .requestMatchers("/error").permitAll()      //pagina errori interna di Spring
+            //area admin : serve il token E il ruolo giusto or 403
+            .requestMatchers("/api/admin/**").hasRole("ADMIN_PIATTAFORMA")
             .anyRequest().authenticated()               //tutto il resto: serve il token
         );
 
