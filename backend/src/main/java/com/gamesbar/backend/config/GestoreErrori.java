@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.gamesbar.backend.auth.CredenzialiNonValideException;
 import com.gamesbar.backend.auth.EmailGiaRegistrataException;
 import com.gamesbar.backend.auth.UtenteNonAttivoException;
+import com.gamesbar.backend.locale.LocaleNonTrovatoException;
+import com.gamesbar.backend.locale.RichiestaNonTrovataException;
 import com.gamesbar.backend.utente.OperazioneNonPermessaException;
 import com.gamesbar.backend.utente.UtenteNonTrovatoException;
 
@@ -37,8 +39,8 @@ public class GestoreErrori {
         //salvo nome del campo , messaggio scritto nel DTO
         Map<String, String> campi = new HashMap<>();
         for (FieldError errore : listaErrori) {
-            String nomeCampo = errore.getField();            //es. "email"
-            String messaggio = errore.getDefaultMessage();   //es. "l'email non è valida"
+            String nomeCampo = errore.getField();            //esempio emai"
+            String messaggio = errore.getDefaultMessage();   //=l'email non è valida
             campi.put(nomeCampo, messaggio);
         }
 
@@ -70,6 +72,21 @@ public class GestoreErrori {
     @ExceptionHandler(UtenteNonTrovatoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErroreRisposta utenteNonTrovato(UtenteNonTrovatoException eccezione) {
+        return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
+    }
+
+    //"locali"
+    //il locale richiesto non esiste → 404
+    @ExceptionHandler(LocaleNonTrovatoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroreRisposta localeNonTrovato(LocaleNonTrovatoException eccezione) {
+        return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
+    }
+
+    //la richiesta di verifica non esiste → 404
+    @ExceptionHandler(RichiestaNonTrovataException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroreRisposta richiestaNonTrovata(RichiestaNonTrovataException eccezione) {
         return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
     }
 

@@ -122,7 +122,7 @@ class AdminUtentiIntegrazioneTest {
 
         mockMvc.perform(put("/api/admin/utenti/" + admin.getId() + "/sospendi").header("Authorization", "Bearer " + tokenAdmin))
             .andExpect(status().isForbidden())
-            .andExpect(jsonPath("$.errore").value("non puoi modificare il tuo stesso account."));
+            .andExpect(jsonPath("$.errore").value("non puoi modificare il stato del tuo stesso account."));
     }
 
     @Test

@@ -72,10 +72,21 @@ backend/
     │
     ├── locale
     │   ├── Locale.java
+    │   ├── StatoVerificaLocale.java
+    │   ├── RichiestaVerificaLocale.java
+    │   ├── StatoRichiestaVerifica.java
     │   ├── LocaleRepository.java
+    │   ├── RichiestaVerificaLocaleRepository.java
     │   ├── LocaleService.java
-    │   ├── LocaleController.java
-    │   └── DTO necessari
+    │   ├── LocaleController.java            /api/locali (gestore)
+    │   ├── AdminLocaleController.java       /api/admin/richieste-locali (solo ADMIN_PIATTAFORMA)
+    │   ├── NuovoLocaleRichiesta.java
+    │   ├── ModificaLocaleRichiesta.java
+    │   ├── RifiutoRichiesta.java
+    │   ├── LocaleRisposta.java
+    │   ├── RichiestaLocaleRisposta.java
+    │   ├── LocaleNonTrovatoException.java
+    │   └── RichiestaNonTrovataException.java
     │
     ├── partita
     │   └── ...
@@ -141,10 +152,21 @@ com.gamesbar.backend
 │
 ├── locale
 │   ├── Locale.java
+│   ├── StatoVerificaLocale.java
+│   ├── RichiestaVerificaLocale.java
+│   ├── StatoRichiestaVerifica.java
 │   ├── LocaleRepository.java
+│   ├── RichiestaVerificaLocaleRepository.java
 │   ├── LocaleService.java
-│   ├── LocaleController.java
-│   └── DTO necessari
+│   ├── LocaleController.java            /api/locali (gestore)
+│   ├── AdminLocaleController.java       /api/admin/richieste-locali (solo ADMIN_PIATTAFORMA)
+│   ├── NuovoLocaleRichiesta.java
+│   ├── ModificaLocaleRichiesta.java
+│   ├── RifiutoRichiesta.java
+│   ├── LocaleRisposta.java
+│   ├── RichiestaLocaleRisposta.java
+│   ├── LocaleNonTrovatoException.java
+│   └── RichiestaNonTrovataException.java
 │
 ├── partita
 │   └── ...
