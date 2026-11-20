@@ -5,7 +5,13 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TipoGiocoRepository extends JpaRepository<TipoGioco,Long>{
-    List<TipoGioco> findByAttivoTrueOrderByNomeAsc(); 
+    List<TipoGioco> findByAttivoTrueOrderByNomeAsc();
+
+    //tutti i tipi, anche quelli non attivi (per l'amministratore del gioco)
+    List<TipoGioco> findAllByOrderByNomeAsc();
+
+    //il codice è UNIQUE nel DB: lo controllo prima per dare un errore chiaro (409)
+    boolean existsByCodice(String codice);
 }
 
 /*

@@ -41,6 +41,8 @@ public class SecurityConfig {
             .requestMatchers("/error").permitAll()      //pagina errori interna di Spring
             //area admin : serve il token E il ruolo giusto or 403
             .requestMatchers("/api/admin/**").hasRole("ADMIN_PIATTAFORMA")
+            //area admin_gioco: tipi_gioco, eventi, sensori <accessibili anche da ADMIN_PIATTAFORMA>
+            .requestMatchers("/api/admin-gioco/**").hasAnyRole("ADMIN_GIOCO", "ADMIN_PIATTAFORMA")
             .anyRequest().authenticated()               //tutto il resto: serve il token
         );
 

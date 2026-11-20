@@ -18,6 +18,10 @@ import com.gamesbar.backend.auth.EmailGiaRegistrataException;
 import com.gamesbar.backend.auth.UtenteNonAttivoException;
 import com.gamesbar.backend.locale.LocaleNonTrovatoException;
 import com.gamesbar.backend.locale.RichiestaNonTrovataException;
+import com.gamesbar.backend.tipogioco.CodiceGiaUsatoException;
+import com.gamesbar.backend.tipogioco.evento.EventoNonTrovatoException;
+import com.gamesbar.backend.tipogioco.sensore.SensoreNonTrovatoException;
+import com.gamesbar.backend.tipogioco.TipoGiocoNonTrovatoException;
 import com.gamesbar.backend.utente.OperazioneNonPermessaException;
 import com.gamesbar.backend.utente.UtenteNonTrovatoException;
 
@@ -90,6 +94,35 @@ public class GestoreErrori {
         return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
     }
 
+    //"tipi di gioco"
+    //il tipo di gioco richiesto non esiste → 404
+    @ExceptionHandler(TipoGiocoNonTrovatoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroreRisposta tipoGiocoNonTrovato(TipoGiocoNonTrovatoException eccezione) {
+        return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
+    }
+
+    //il tipo di evento non esiste (o non esiste in quel gioco) → 404
+    @ExceptionHandler(EventoNonTrovatoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroreRisposta eventoNonTrovato(EventoNonTrovatoException eccezione) {
+        return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
+    }
+
+    //il tipo di sensore non esiste → 404
+    @ExceptionHandler(SensoreNonTrovatoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroreRisposta sensoreNonTrovato(SensoreNonTrovatoException eccezione) {
+        return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
+    }
+
+    //codice già usato: tipo di gioco, oppure evento/sensore dentro lo stesso gioco → 409
+    @ExceptionHandler(CodiceGiaUsatoException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErroreRisposta codiceGiaUsato(CodiceGiaUsatoException eccezione) {
+        return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
+    }
+
     //operazione vietata da una regola esempio admin non pò modificare se stesso → 403
     @ExceptionHandler(OperazioneNonPermessaException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
@@ -97,7 +130,7 @@ public class GestoreErrori {
         return new ErroreRisposta(eccezione.getMessage(), new HashMap<>());
     }
 
-    //JSON scritto male o con un valore non ammesso (es. "ruolo": "bviibi") → 400
+    //JSON scritto male o con un valore non ammesso esempio "ruolo": "non esiste" → 400
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErroreRisposta jsonNonLeggibile(HttpMessageNotReadableException eccezione) {

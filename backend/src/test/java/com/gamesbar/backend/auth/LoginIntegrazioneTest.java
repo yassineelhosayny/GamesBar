@@ -95,7 +95,7 @@ class LoginIntegrazioneTest {
 
     @Test
     void tipiGiocoRestanoPubbliciSenzaToken() throws Exception {
-        mockMvc.perform(get("/api/tipi-gioco/attive"))
+        mockMvc.perform(get("/api/tipi-gioco/attivi"))
             .andExpect(status().isOk());
     }
 }

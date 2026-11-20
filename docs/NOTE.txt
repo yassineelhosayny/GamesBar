@@ -35,8 +35,28 @@ backend/
     │   ├── TipoGioco.java
     │   ├── TipoGiocoRepository.java
     │   ├── TipoGiocoService.java
-    │   ├── TipoGiocoController.java
-    │   └── TipoGiocoRisposta.java
+    │   ├── TipoGiocoController.java         /api/tipi-gioco/attivi (pubblico)
+    │   ├── AdminTipoGiocoController.java    /api/admin-gioco/tipi-gioco (ADMIN_GIOCO, ADMIN_PIATTAFORMA)
+    │   ├── TipoGiocoRisposta.java
+    │   ├── NuovoTipoGiocoRichiesta.java
+    │   ├── TipoGiocoNonTrovatoException.java
+    │   ├── CodiceGiaUsatoException.java     (usata anche da evento e sensore)
+    │   ├── evento/
+    │   │   ├── TipoEventoGioco.java             "abilitata" = regola di registrazione
+    │   │   ├── TipoEventoGiocoRepository.java
+    │   │   ├── EventoService.java
+    │   │   ├── AdminEventoController.java       /api/admin-gioco/.../eventi
+    │   │   ├── NuovoTipoEventoRichiesta.java
+    │   │   ├── TipoEventoRisposta.java
+    │   │   └── EventoNonTrovatoException.java
+    │   └── sensore/
+    │       ├── TipoSensore.java                 sensore del gioco + evento prodotto
+    │       ├── TipoSensoreRepository.java
+    │       ├── SensoreService.java
+    │       ├── AdminSensoreController.java      /api/admin-gioco/.../sensori
+    │       ├── NuovoTipoSensoreRichiesta.java
+    │       ├── TipoSensoreRisposta.java
+    │       └── SensoreNonTrovatoException.java
     │
     ├── utente
     │   ├── Utente.java
@@ -115,8 +135,28 @@ com.gamesbar.backend
 │   ├── TipoGioco.java
 │   ├── TipoGiocoRepository.java
 │   ├── TipoGiocoService.java
-│   ├── TipoGiocoController.java
-│   └── TipoGiocoRisposta.java
+│   ├── TipoGiocoController.java         /api/tipi-gioco/attivi (pubblico)
+│   ├── AdminTipoGiocoController.java    /api/admin-gioco/tipi-gioco (ADMIN_GIOCO, ADMIN_PIATTAFORMA)
+│   ├── TipoGiocoRisposta.java
+│   ├── NuovoTipoGiocoRichiesta.java
+│   ├── TipoGiocoNonTrovatoException.java
+│   ├── CodiceGiaUsatoException.java     (usata anche da evento e sensore)
+│   ├── evento/
+│   │   ├── TipoEventoGioco.java             "abilitata" = regola di registrazione
+│   │   ├── TipoEventoGiocoRepository.java
+│   │   ├── EventoService.java
+│   │   ├── AdminEventoController.java       /api/admin-gioco/.../eventi
+│   │   ├── NuovoTipoEventoRichiesta.java
+│   │   ├── TipoEventoRisposta.java
+│   │   └── EventoNonTrovatoException.java
+│   └── sensore/
+│       ├── TipoSensore.java                 sensore del gioco + evento prodotto
+│       ├── TipoSensoreRepository.java
+│       ├── SensoreService.java
+│       ├── AdminSensoreController.java      /api/admin-gioco/.../sensori
+│       ├── NuovoTipoSensoreRichiesta.java
+│       ├── TipoSensoreRisposta.java
+│       └── SensoreNonTrovatoException.java
 │
 ├── utente
 │   ├── Utente.java

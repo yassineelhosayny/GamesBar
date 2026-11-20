@@ -2,6 +2,9 @@ package com.gamesbar.backend.tipogioco;
 
 import java.time.Instant;
 
+import org.hibernate.annotations.Generated;
+import org.hibernate.generator.EventType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,58 +15,70 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "tipo_gioco")
 public class TipoGioco {
-    
+
     @Id             //chiave primaria
     @GeneratedValue(strategy=GenerationType.IDENTITY)  //valore del id viene generata dal database
     private Long id;
 
+    //chi ha creato il tipo di gioco (admin del gioco)
     @Column(name = "amministratore_id")
     private Long adminId;
 
-    @Column(nullable = false)
+    @Column(name = "codice", nullable = false, length = 40)
     private String codice;
 
-    @Column(nullable=false)
+    @Column(name = "nome", nullable = false, length = 100)
     private String nome;
 
-    @Column
+    @Column(name = "descrizione")
     private String descrizione;
 
-    @Column
-    private String versione_gestore;
+    @Column(name = "versione_gestore", length = 20)
+    private String versioneGestore;
 
-    @Column(nullable=false)
+    @Column(name = "attivo", nullable = false)
     private boolean attivo;
 
-    @Column(nullable=false)
-    private Instant data_creazione;
+    @Generated
+    @Column(name = "data_creazione", nullable = false, insertable = false, updatable = false)
+    private Instant dataCreazione;
 
-    @Column(nullable=false)
-    private Instant data_aggiornamento;
+    @Generated(event = {EventType.INSERT, EventType.UPDATE})
+    @Column(name = "data_aggiornamento", nullable = false, insertable = false, updatable = false)
+    private Instant dataAggiornamento;
 
 
     //costrutore per JPA
     protected TipoGioco(){}
-    //costrutore di controllo e test
-    public TipoGioco(String nome,String codice, String descrizione, String versioneGestore,boolean stato){
+
+    //l'attivazione è una scelta esplicita dell'amministratore
+    public TipoGioco(Long adminId, String codice, String nome, String descrizione, String versioneGestore){
         if(codice == null || codice.isBlank()){
             throw new IllegalArgumentException("il codice è obbligatorio.");
         }
         if(nome == null || nome.isBlank()){
             throw new IllegalArgumentException("il nome è obbligatorio.");
         }
-        this.codice = codice;
-        this.nome = nome;
+        this.adminId = adminId;
+        this.codice = codice.trim().toUpperCase();   //il DB accetta solo codici maiuscoli (es. FRECCETTE)
+        this.nome = nome.trim();
         this.descrizione = descrizione;
-        this.versione_gestore = versioneGestore;
-        this.attivo = stato;
+        this.versioneGestore = versioneGestore;
+        this.attivo = false;
     }
-     //getter e setters
+
+    //operazioni controllate al posto dei setter
+    public void attiva() {
+        this.attivo = true;
+    }
+
+    public void disattiva() {
+        this.attivo = false;
+    }
+
+    //getter
     public Long getId() {
         return id;
-    }
-    public String getNome() {
-        return nome;
     }
 
     public Long getAmministratore_id() {
@@ -74,49 +89,29 @@ public class TipoGioco {
         return codice;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
     public String getDescrizione() {
         return descrizione;
     }
 
-    public String getVersione_gestore() {
-        return versione_gestore;
+    public String getVersioneGestore() {
+        return versioneGestore;
     }
 
     public boolean isAttivo() {
         return attivo;
     }
 
-    public Instant getData_creazione() {
-        return data_creazione;
+    public Instant getDataCreazione() {
+        return dataCreazione;
     }
 
-    public Instant getData_aggiornamento() {
-        return data_aggiornamento;
+    public Instant getDataAggiornamento() {
+        return dataAggiornamento;
     }
-
-    
-    public void setAmministratore_id(Long amministratore_id) {
-        this.adminId = amministratore_id;
-    }
-
-    public void setCodice(String codice) {
-        this.codice = codice;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
-
-    public void setVersione_gestore(String versione_gestore) {
-        this.versione_gestore = versione_gestore;
-    }
-
-    public void setAttivo(boolean attivo) {
-        this.attivo = attivo;
-    }
-
-   
-    
 }
 
 
@@ -132,4 +127,7 @@ tabella nel database
     attivo              BOOLEAN      NOT NULL DEFAULT FALSE,
     data_creazione      TIMESTAMPTZ  NOT NULL DEFAULT now(),
     data_aggiornamento  TIMESTAMPTZ  NOT NULL DEFAULT now(),
+
+    CONSTRAINT tipo_gioco_codice_univoco UNIQUE (codice),
+    CONSTRAINT tipo_gioco_codice_formato CHECK (codice ~ '^[A-Z][A-Z0-9_]*$'),
      */

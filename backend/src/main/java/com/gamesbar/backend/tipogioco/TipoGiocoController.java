@@ -15,7 +15,7 @@ public class TipoGiocoController {
         this.tipoGiocoService = tipiGiocoService;
     }
 
-    @GetMapping("/attive")
+    @GetMapping("/attivi")
     public List<TipoGiocoRisposta> trovaTipiGiochiAttivi(){
         return tipoGiocoService.trovaTipiGiochiAttivi();
     }
